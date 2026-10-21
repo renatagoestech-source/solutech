@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#06152b">
+  <title>Painel administrativo | Solutech</title>
+  <link rel="icon" href="logo-solutech.png"><link rel="stylesheet" href="css/style.css">
+  <script src="js/admin.js" defer></script>
+</head>
+<body class="admin-body">
+  <header class="admin-header">
+    <a class="admin-logo" href="index.html"><img src="logo-solutech.png" alt="Solutech"><span>PAINEL ADMINISTRATIVO</span></a>
+    <a href="index.html" class="back-link">← Voltar ao site</a>
+  </header>
+  <main class="admin-main">
+    <div class="admin-title-row"><div><div class="eyebrow"><span class="pulse"></span> CENTRAL DE OPERAÇÕES</div><h1>Painel Solutech</h1><p>Organize os atendimentos e acompanhe as ordens de serviço.</p></div><span class="demo-tag">MODO DEMONSTRAÇÃO</span></div>
+    <section class="login-wrap" id="loginWrap">
+      <div class="login-card">
+        <img src="logo-solutech.png" alt="Solutech" class="login-logo">
+        <h1>Bem-vinda(o) de volta</h1><p>Entre para gerenciar as ordens de serviço.</p>
+        <form class="admin-form" id="loginForm">
+          <label>Usuário<input name="username" autocomplete="username" required placeholder="Digite o usuário"></label>
+          <label>Senha<input name="password" type="password" autocomplete="current-password" required placeholder="Digite a senha"></label>
+          <button class="btn btn-primary btn-full" type="submit">Entrar no painel <span>↗</span></button>
+          <div id="loginError" class="login-error" role="alert"></div>
+        </form>
+        <div class="login-hint"><strong>Acesso de demonstração</strong><br>Usuário: <code>admin</code> · Senha: <code>solutech2026</code></div>
+        <p class="admin-disclaimer">Atenção: este acesso é apenas demonstrativo. A senha e os registros ficam no navegador. Não use dados reais nem publique esta versão como sistema seguro de produção.</p>
+      </div>
+    </section>
+
+    <section class="dashboard" id="dashboard">
+      <div class="dashboard-top"><div><h2>Olá, equipe Solutech! <span style="color:var(--cyan)">✦</span></h2><p id="todayLabel">Aqui está o resumo dos seus atendimentos.</p></div><div class="dashboard-actions"><button class="btn btn-secondary" id="exportBtn">Exportar dados ↓</button><button class="btn btn-secondary" id="logoutBtn">Sair ↗</button></div></div>
+      <div class="stats-grid">
+        <article class="stat-card"><span class="stat-label">TOTAL DE OS</span><strong class="stat-number" id="statTotal">0</strong><span class="stat-foot">Ordens registradas</span></article>
+        <article class="stat-card"><span class="stat-label">EM ANDAMENTO</span><strong class="stat-number" id="statProgress">0</strong><span class="stat-foot">Aguardando conclusão</span></article>
+        <article class="stat-card"><span class="stat-label">AGUARDANDO</span><strong class="stat-number" id="statWaiting">0</strong><span class="stat-foot">Análise ou aprovação</span></article>
+        <article class="stat-card"><span class="stat-label">CONCLUÍDAS</span><strong class="stat-number" id="statDone">0</strong><span class="stat-foot">Serviços finalizados</span></article>
+      </div>
+      <div class="admin-columns">
+        <div>
+          <section class="panel-card">
+            <div class="panel-heading"><h3>＋ Nova ordem de serviço</h3><span>CADASTRO DE ATENDIMENTO</span></div>
+            <form id="osForm" class="admin-form">
+              <input type="hidden" name="id">
+              <div class="form-row"><label>Nome do cliente *<input name="customer" required placeholder="Nome completo"></label><label>Telefone<input name="phone" placeholder="(87) 99999-9999"></label></div>
+              <div class="form-row"><label>Equipamento *<select name="equipment" required><option value="">Selecione</option><option>Computador desktop</option><option>Notebook</option><option>Impressora</option><option>Outro equipamento</option></select></label><label>Marca / modelo<input name="model" placeholder="Ex.: Dell Inspiron"></label></div>
+              <label>Problema relatado *<textarea name="problem" required placeholder="Descreva o defeito informado pelo cliente"></textarea></label>
+              <div class="form-row"><label>Diagnóstico técnico<textarea name="diagnosis" placeholder="Análise técnica"></textarea></label><label>Serviço realizado<textarea name="service" placeholder="Procedimentos executados"></textarea></label></div>
+              <div class="form-row"><label>Status<select name="status"><option>Aguardando diagnóstico</option><option>Aguardando aprovação</option><option>Em andamento</option><option>Aguardando peça</option><option>Concluída</option><option>Entregue</option><option>Cancelada</option></select></label><label>Técnico responsável<input name="technician" placeholder="Nome do técnico"></label></div>
+              <div class="form-row"><label>Valor do serviço (R$)<input name="price" type="number" min="0" step="0.01" placeholder="0,00"></label><label>Previsão de entrega<input name="deadline" type="date"></label></div>
+              <label>Observações / acessórios recebidos<textarea name="notes" placeholder="Ex.: carregador, bolsa, riscos aparentes, senha combinada..."></textarea></label>
+              <div class="dashboard-actions"><button class="btn btn-primary" type="submit" id="saveOsBtn">Salvar ordem de serviço <span>✓</span></button><button class="btn btn-secondary" type="button" id="clearFormBtn">Limpar</button></div>
+              <p class="form-note" style="text-align:left;margin-top:13px">O número da OS é gerado automaticamente. Confira as informações antes de imprimir.</p>
+            </form>
+          </section>
+        </div>
+        <div>
+          <section class="panel-card">
+            <div class="panel-heading"><h3>Ordens de serviço</h3><span id="osCountLabel">0 REGISTROS</span></div>
+            <label style="display:block;font-size:10px;color:#a8bfd3;margin-bottom:12px">Buscar por cliente, número ou equipamento
+              <input id="searchOs" placeholder="Digite para filtrar..." style="display:block;width:100%;margin-top:7px;padding:11px;background:#07192e;border:1px solid var(--line);color:white;border-radius:4px">
+            </label>
+            <div class="table-wrap"><table class="os-table"><thead><tr><th>OS / CLIENTE</th><th>STATUS</th><th>AÇÕES</th></tr></thead><tbody id="osTableBody"></tbody></table></div>
+            <div id="emptyState" class="empty-state">Nenhuma OS cadastrada ainda.<br>Crie a primeira ordem ao lado.</div>
+          </section>
+          <section class="panel-card">
+            <div class="panel-heading"><h3>Dados da empresa na impressão</h3><span>PERSONALIZAR</span></div>
+            <form id="companyForm" class="admin-form">
+              <label>Nome da empresa<input name="company" value="Solutech — Assistência Técnica" required></label>
+              <label>Endereço<input name="address" value="Rua Joaquim Godoy, 145 — Centro, Serra Talhada - PE" required></label>
+              <div class="form-row"><label>Telefone<input name="phone" value="(87) 99999-0101" required></label><label>E-mail<input name="email" value="contato@solutech.example" required></label></div>
+              <label>CNPJ<input name="cnpj" value="00.000.000/0001-00" required></label>
+              <button class="btn btn-secondary" type="submit">Salvar dados da impressão ✓</button>
+            </form>
+            <p class="admin-disclaimer">Os dados empresariais são fictícios. Atualize-os antes de utilizar documentos fora da demonstração.</p>
+          </section>
+        </div>
+      </div>
+      <div class="dashboard-foot">Solutech · Organizando cada reparo, um atendimento de cada vez. <span style="color:var(--cyan)">◆</span></div>
+    </section>
+  </main>
+  <div id="toast" class="toast" hidden></div>
+</body>
+</html>

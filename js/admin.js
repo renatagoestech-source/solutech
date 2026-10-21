@@ -1,0 +1,56 @@
+(() => {
+  const $ = (s, root=document) => root.querySelector(s);
+  const DB_KEY = 'solutech_demo_orders_v1';
+  const COMPANY_KEY = 'solutech_demo_company_v1';
+  const SESSION_KEY = 'solutech_demo_session_v1';
+  const demoUser = 'admin', demoPassword = 'solutech2026';
+  let orders = loadOrders();
+  let editingId = null;
+  const loginWrap = $('#loginWrap'), dashboard = $('#dashboard');
+  const escapeHtml = (value='') => String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  function loadOrders(){try{return JSON.parse(localStorage.getItem(DB_KEY)||'[]')}catch{return []}}
+  function saveOrders(){localStorage.setItem(DB_KEY,JSON.stringify(orders))}
+  function loadCompany(){try{return {...defaultCompany,...JSON.parse(localStorage.getItem(COMPANY_KEY)||'{}')}}catch{return {...defaultCompany}}}
+  const defaultCompany={company:'Solutech — Assistência Técnica',address:'Rua Joaquim Godoy, 145 — Centro, Serra Talhada - PE',phone:'(87) 99999-0101',email:'contato@solutech.example',cnpj:'00.000.000/0001-00'};
+  function toast(message){const el=$('#toast');el.textContent=message;el.hidden=false;setTimeout(()=>el.hidden=true,2800)}
+  function showDashboard(){loginWrap.style.display='none';dashboard.classList.add('visible');render();populateCompany();$('#todayLabel').textContent=new Intl.DateTimeFormat('pt-BR',{dateStyle:'full'}).format(new Date())+' · Visão geral dos atendimentos.'}
+  function showLogin(){loginWrap.style.display='block';dashboard.classList.remove('visible')}
+  $('#loginForm').addEventListener('submit',e=>{e.preventDefault();const d=new FormData(e.currentTarget);if(d.get('username')===demoUser&&d.get('password')===demoPassword){sessionStorage.setItem(SESSION_KEY,'1');$('#loginError').textContent='';showDashboard()}else{$('#loginError').textContent='Usuário ou senha incorretos. Tente novamente.'}});
+  $('#logoutBtn').addEventListener('click',()=>{sessionStorage.removeItem(SESSION_KEY);showLogin();$('#loginForm').reset()});
+  $('#osForm').addEventListener('submit',e=>{
+    e.preventDefault();const form=e.currentTarget;const d=Object.fromEntries(new FormData(form).entries());
+    if(!d.customer?.trim()||!d.equipment||!d.problem?.trim()){toast('Preencha os campos obrigatórios.');return}
+    const now=new Date().toISOString();
+    if(editingId){const old=orders.find(o=>o.id===editingId);orders=orders.map(o=>o.id===editingId?{...old,...d,updatedAt:now}:o);toast('Ordem de serviço atualizada!')}
+    else{const nextNo=orders.reduce((max,o)=>Math.max(max,Number(o.number)||0),1000)+1;orders.unshift({...d,id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),number:nextNo,createdAt:now});toast('OS cadastrada com sucesso!')}
+    saveOrders();form.reset();editingId=null;$('#saveOsBtn').innerHTML='Salvar ordem de serviço <span>✓</span>';render();
+  });
+  $('#clearFormBtn').addEventListener('click',()=>{editingId=null;$('#osForm').reset();$('#saveOsBtn').innerHTML='Salvar ordem de serviço <span>✓</span>'});
+  $('#searchOs').addEventListener('input',render);
+  $('#companyForm').addEventListener('submit',e=>{e.preventDefault();const data=Object.fromEntries(new FormData(e.currentTarget).entries());localStorage.setItem(COMPANY_KEY,JSON.stringify(data));toast('Dados da empresa salvos para impressão.')});
+  function populateCompany(){const data=loadCompany();const f=$('#companyForm');Object.entries(data).forEach(([key,value])=>{if(f.elements[key])f.elements[key].value=value})}
+  function statusClass(status){if(['Concluída','Entregue'].includes(status))return'done';if(status==='Em andamento'||status==='Aguardando peça')return'progress';if(status==='Cancelada')return'cancelled';return''}
+  function render(){
+    orders=loadOrders();$('#statTotal').textContent=orders.length;$('#statProgress').textContent=orders.filter(o=>['Em andamento','Aguardando peça'].includes(o.status)).length;$('#statWaiting').textContent=orders.filter(o=>['Aguardando diagnóstico','Aguardando aprovação'].includes(o.status)).length;$('#statDone').textContent=orders.filter(o=>['Concluída','Entregue'].includes(o.status)).length;
+    const q=($('#searchOs').value||'').toLowerCase();const filtered=orders.filter(o=>[o.customer,o.equipment,o.model,o.number].some(v=>String(v||'').toLowerCase().includes(q)));
+    $('#osCountLabel').textContent=`${filtered.length} REGISTRO${filtered.length===1?'':'S'}`;
+    $('#emptyState').style.display=filtered.length?'none':'block';
+    $('#osTableBody').innerHTML=filtered.map(o=>`<tr><td><strong>#OS-${escapeHtml(o.number)}</strong><span class="table-muted">${escapeHtml(o.customer)}</span><span class="table-muted">${escapeHtml(o.equipment)}${o.model?' · '+escapeHtml(o.model):''}</span></td><td><span class="status-pill ${statusClass(o.status)}">${escapeHtml(o.status||'Aguardando diagnóstico')}</span></td><td><div class="table-actions"><button class="mini-btn" data-action="print" data-id="${escapeHtml(o.id)}">Imprimir</button><button class="mini-btn" data-action="edit" data-id="${escapeHtml(o.id)}">Editar</button><button class="mini-btn danger" data-action="delete" data-id="${escapeHtml(o.id)}">Excluir</button></div></td></tr>`).join('');
+  }
+  $('#osTableBody').addEventListener('click',e=>{const btn=e.target.closest('button[data-action]');if(!btn)return;const order=orders.find(o=>o.id===btn.dataset.id);if(!order)return;if(btn.dataset.action==='edit')editOrder(order);if(btn.dataset.action==='delete'){if(confirm(`Excluir a OS #OS-${order.number} de ${order.customer}?`)){orders=orders.filter(o=>o.id!==order.id);saveOrders();render();toast('OS excluída.')}}if(btn.dataset.action==='print')printOrder(order)});
+  function editOrder(order){editingId=order.id;const form=$('#osForm');Object.keys(order).forEach(k=>{if(form.elements[k])form.elements[k].value=order[k]??''});$('#saveOsBtn').innerHTML='Salvar alterações <span>✓</span>';form.scrollIntoView({behavior:'smooth',block:'start'});toast(`Editando OS #OS-${order.number}`)}
+  $('#exportBtn').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(orders,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='solutech-ordens-de-servico.json';a.click();URL.revokeObjectURL(url);toast('Arquivo de dados exportado.')});
+  function printOrder(o){
+    const c=loadCompany();const money=Number(o.price||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});const date=o.createdAt?new Date(o.createdAt).toLocaleDateString('pt-BR'):'—';const deadline=o.deadline?new Date(`${o.deadline}T12:00:00`).toLocaleDateString('pt-BR'):'Não definida';
+    const safe=escapeHtml;const printWindow=window.open('','_blank','width=900,height=720');if(!printWindow){toast('Permita pop-ups para imprimir a OS.');return}
+    printWindow.document.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>OS-${safe(o.number)} | Solutech</title><style>
+    *{box-sizing:border-box}body{font-family:Arial,sans-serif;color:#17202b;margin:0;padding:28px;font-size:12px}.sheet{max-width:900px;margin:auto;border:1px solid #cbd5df;padding:26px}.head{display:flex;justify-content:space-between;gap:20px;border-bottom:3px solid #04b8df;padding-bottom:18px}.brand{font-size:25px;font-weight:800;color:#09243f}.brand span{color:#00a9d9}.company{font-size:10px;line-height:1.6;text-align:right}.os-title{display:flex;justify-content:space-between;align-items:center;margin:22px 0}.os-title h1{font-size:20px;margin:0}.number{background:#09243f;color:white;padding:9px 13px;font-weight:bold}.section{border:1px solid #d7e0e8;margin:13px 0}.section h2{font-size:11px;text-transform:uppercase;letter-spacing:.08em;background:#edf5f9;padding:9px 12px;margin:0;border-bottom:1px solid #d7e0e8}.fields{display:grid;grid-template-columns:1fr 1fr;gap:0}.field{padding:10px 12px;border-bottom:1px solid #e2e8ef;min-height:45px}.field:nth-child(odd){border-right:1px solid #e2e8ef}.field b{display:block;color:#5a6b7c;font-size:9px;text-transform:uppercase;margin-bottom:5px}.full{grid-column:1/-1;border-right:0!important;min-height:60px;white-space:pre-wrap}.terms{font-size:9px;line-height:1.6;color:#4d5b69}.signatures{display:grid;grid-template-columns:1fr 1fr;gap:45px;margin:44px 20px 18px;text-align:center}.signatures div{border-top:1px solid #657687;padding-top:8px;font-size:10px}.foot{margin-top:20px;border-top:1px solid #d7e0e8;padding-top:10px;color:#718092;font-size:9px;display:flex;justify-content:space-between}@media print{body{padding:0}.sheet{border:0;padding:0}@page{size:A4;margin:12mm}}</style></head><body><div class="sheet"><header class="head"><div><div class="brand">SOLU<span>TECH</span></div><div style="font-size:10px;letter-spacing:2px">ASSISTÊNCIA TÉCNICA</div></div><div class="company"><b>${safe(c.company)}</b><br>${safe(c.address)}<br>Telefone: ${safe(c.phone)}<br>E-mail: ${safe(c.email)}<br>CNPJ: ${safe(c.cnpj)}</div></header>
+    <div class="os-title"><h1>ORDEM DE SERVIÇO</h1><div class="number">OS Nº ${safe(o.number)}</div></div>
+    <div class="section"><h2>Dados do atendimento</h2><div class="fields"><div class="field"><b>Data de abertura</b>${safe(date)}</div><div class="field"><b>Status</b>${safe(o.status||'Aguardando diagnóstico')}</div><div class="field"><b>Cliente</b>${safe(o.customer)}</div><div class="field"><b>Telefone</b>${safe(o.phone||'Não informado')}</div></div></div>
+    <div class="section"><h2>Equipamento</h2><div class="fields"><div class="field"><b>Tipo</b>${safe(o.equipment)}</div><div class="field"><b>Marca / modelo</b>${safe(o.model||'Não informado')}</div><div class="field full"><b>Problema relatado pelo cliente</b>${safe(o.problem)}</div><div class="field full"><b>Diagnóstico técnico</b>${safe(o.diagnosis||'A realizar')}</div><div class="field full"><b>Serviço realizado</b>${safe(o.service||'A definir')}</div><div class="field"><b>Técnico responsável</b>${safe(o.technician||'Não informado')}</div><div class="field"><b>Previsão de entrega</b>${safe(deadline)}</div><div class="field"><b>Valor do serviço</b>${safe(money)}</div><div class="field"><b>Acessórios / observações</b>${safe(o.notes||'Não informado')}</div></div></div>
+    <p class="terms"><b>Termos do atendimento:</b> O cliente declara que as informações acima correspondem ao equipamento entregue para avaliação. O diagnóstico e o orçamento devem ser aprovados antes da execução de serviços adicionais. Recomenda-se manter cópia de segurança dos dados. A Solutech deve registrar qualquer alteração de escopo e combinar previamente as condições de garantia e retirada.</p>
+    <div class="signatures"><div>Assinatura do cliente</div><div>Assinatura do responsável técnico</div></div><div class="foot"><span>Documento gerado pelo sistema de demonstração Solutech.</span><span>OS ${safe(o.number)} · ${safe(date)}</span></div></div><script>window.onload=()=>setTimeout(()=>window.print(),300);</script></body></html>`);
+    printWindow.document.close();
+  }
+  if(sessionStorage.getItem(SESSION_KEY)==='1')showDashboard();else showLogin();
+})();
