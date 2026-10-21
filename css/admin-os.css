@@ -1,0 +1,45 @@
+/* Estilos exclusivos do painel de OS; não afetam o site público. */
+.admin-body .os-safety-note{margin:14px 0;padding:11px 13px;border:1px solid rgba(255,193,7,.28);border-left:3px solid #e2b647;border-radius:6px;background:rgba(226,182,71,.07);color:#c8d7e5;font-size:10px;line-height:1.7}
+.admin-body .os-safety-note strong{color:#ffd16b}
+.admin-body .os-form{display:grid;gap:14px}
+.admin-body .os-section{min-width:0;margin:0;padding:16px;border:1px solid rgba(127,181,221,.19);border-radius:8px;background:rgba(5,20,39,.42)}
+.admin-body .os-section legend{padding:0 9px;color:#d9e8f5;font-size:12px;font-weight:800;letter-spacing:.015em}
+.admin-body .os-section legend span{display:inline-grid;place-items:center;width:23px;height:23px;margin-right:8px;border:1px solid rgba(18,200,239,.45);border-radius:50%;color:var(--cyan);font:9px var(--mono)}
+.admin-body .os-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px}
+.admin-body .os-field{display:block;min-width:0;margin:0;color:#c4d5e5;font-size:10px;font-weight:700}
+.admin-body .os-field-full{grid-column:1/-1}
+.admin-body .os-field small{display:block;margin-top:6px;color:#819bb4;font-size:9px;line-height:1.6;font-weight:500}
+.admin-body .os-field textarea{min-height:76px}
+.admin-body .os-section-help{margin:0 0 12px;color:#88a3bc;font-size:10px;line-height:1.7}
+.admin-body .os-inspection-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:14px}
+.admin-body .os-inspection-row{display:grid;grid-template-columns:minmax(0,.8fr) minmax(82px,.55fr) minmax(0,1fr);align-items:center;gap:8px;padding:9px;border:1px solid rgba(127,181,221,.13);border-radius:6px;background:rgba(7,25,46,.65)}
+.admin-body .os-inspection-row strong{font-size:9px;color:#dbe8f4}
+.admin-body .os-inspection-row label{display:block;min-width:0;margin:0;color:#86a0b9;font-size:8px}
+.admin-body .os-inspection-row select,.admin-body .os-inspection-row input{display:block;width:100%;min-width:0;margin:4px 0 0;padding:7px 8px;border:1px solid rgba(130,174,209,.22);border-radius:4px;background:#07192e;color:#eaf7ff;font:9px var(--font)}
+.admin-body .os-checkbox-row{display:grid;gap:8px;padding:10px 12px;border:1px solid rgba(127,181,221,.13);border-radius:6px;background:rgba(7,25,46,.52)}
+.admin-body .os-checkbox{display:flex;align-items:flex-start;gap:9px;margin:0;color:#d2e1ef;font-size:10px;line-height:1.6;font-weight:600}
+.admin-body .os-checkbox input{display:inline-block;flex:0 0 auto;width:15px;height:15px;margin:2px 0 0;accent-color:var(--cyan)}
+.admin-body .os-terms-copy{padding:10px 13px;border-radius:6px;background:rgba(7,25,46,.7);color:#a9bfd2;font-size:9px;line-height:1.7}
+.admin-body .os-terms-copy ol{margin:0;padding-left:18px}
+.admin-body .os-terms-copy li+li{margin-top:4px}
+.admin-body .os-terms-check{margin-top:12px;padding:10px 12px;border:1px solid rgba(18,200,239,.24);border-radius:6px;background:rgba(18,200,239,.045)}
+.admin-body .os-terms-check span{color:#e3f3fd}
+.admin-body .os-terms-section [hidden]{display:none}
+.admin-body .os-label{display:block;margin-bottom:6px;color:#c4d5e5;font-size:10px;font-weight:700}
+.admin-body .os-signature-grid{align-items:start}
+.admin-body .os-signature-canvas{display:block;width:100%;height:96px;margin:6px 0;border:1px dashed rgba(130,174,209,.4);border-radius:6px;background:#f8fbfd;touch-action:none;cursor:crosshair}
+.admin-body .os-submit-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:2px}
+.admin-body .os-form-note{text-align:left;margin:0}
+.admin-body .os-list-tools{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(180px,.8fr);gap:12px;margin-bottom:14px}
+.admin-body .os-list-tools label{display:block;margin:0;color:#9bb0c8;font-size:9px;font-weight:700}
+.admin-body .os-list-tools input,.admin-body .os-list-tools select{display:block;width:100%;margin-top:6px;padding:10px 11px;border:1px solid var(--line);border-radius:5px;background:#07192e;color:#f5f8ff;font:10px var(--font)}
+.admin-body .os-status-select{max-width:175px;padding:6px 7px;border:1px solid rgba(127,181,221,.22);border-radius:5px;background:#07192e;color:#dcebf6;font:9px var(--font)}
+.admin-body .os-status-select.done{color:#6ee7b7;border-color:rgba(110,231,183,.35)}
+.admin-body .os-status-select.progress{color:#ffd16b;border-color:rgba(255,209,107,.35)}
+.admin-body .os-status-select.cancelled{color:#ff9c9c;border-color:rgba(255,156,156,.35)}
+.admin-body .os-table td{vertical-align:middle}
+.admin-body .os-table .table-muted{display:block;margin-top:3px}
+.admin-body .os-table .table-actions{display:flex;flex-wrap:wrap;gap:5px}
+.admin-body .os-table .mini-btn{padding:6px 7px;font-size:8px}
+@media(max-width:980px){.admin-body .os-inspection-grid{grid-template-columns:1fr}}
+@media(max-width:680px){.admin-body .os-grid,.admin-body .os-list-tools{grid-template-columns:1fr}.admin-body .os-field-full{grid-column:auto}.admin-body .os-section{padding:13px}.admin-body .os-inspection-row{grid-template-columns:1fr 1fr}.admin-body .os-inspection-row strong{grid-column:1/-1}.admin-body .os-signature-grid{grid-template-columns:1fr}.admin-body .os-submit-row>.btn{flex:1 1 100%}.admin-body .os-table{min-width:650px}}
