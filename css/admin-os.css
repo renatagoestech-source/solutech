@@ -42,11 +42,12 @@
 .admin-body .os-table .table-actions{display:flex;flex-wrap:wrap;gap:5px}
 .admin-body .os-table .mini-btn{padding:6px 7px;font-size:8px}
 @media(max-width:980px){.admin-body .os-inspection-grid{grid-template-columns:1fr}}
-@media(max-width:680px){.admin-body .os-grid,.admin-body .os-list-tools{grid-template-columns:1fr}.admin-body .os-field-full{grid-column:auto}.admin-body .os-section{padding:13px}.admin-body .os-inspection-row{grid-template-columns:1fr 1fr}.admin-body .os-inspection-row strong{grid-column:1/-1}.admin-body .os-signature-grid{grid-template-columns:1fr}.admin-body .os-submit-row>.btn{flex:1 1 100%}.admin-body .os-table{min-width:650px}}
-
+@media(max-width:680px){.admin-body .os-grid,.admin-body .os-list-tools{grid-template-columns:1fr}.admin-body .os-field-full{grid-column:auto}.admin-body .os-section{padding:13px}.admin-body .os-inspection-row{grid-template-columns:1fr 1fr}.admin-body .os-inspection-row strong{grid-column:1/-1}.admin-body .os-signature-grid{grid-template-columns:1fr}.admin-body .os-submit-row>.btn{flex:1 1 100%}}
+@media(max-width:680px){.admin-body .os-table{min-width:0;width:100%}.admin-body .os-table thead{display:none}.admin-body .os-table tbody{display:grid;gap:10px}.admin-body .os-table tbody tr{display:grid;gap:9px;padding:12px;border:1px solid rgba(127,181,221,.2);border-radius:7px;background:rgba(7,25,46,.58)}.admin-body .os-table tbody td{display:block;min-width:0;padding:0;border:0}.admin-body .os-table tbody td::before{display:block;margin-bottom:4px;color:#819bb4;font-size:8px;font-weight:700;letter-spacing:.06em}.admin-body .os-table tbody td:nth-child(1)::before{content:'OS / CLIENTE'}.admin-body .os-table tbody td:nth-child(2)::before{content:'EQUIPAMENTO'}.admin-body .os-table tbody td:nth-child(3)::before{content:'STATUS'}.admin-body .os-table tbody td:nth-child(4)::before{content:'AÇÕES'}.admin-body .os-status-select{width:100%;max-width:none}.admin-body .os-table .table-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.admin-body .os-table .mini-btn{width:100%;min-height:34px;padding:7px 8px;font-size:9px;white-space:normal}.admin-body .table-wrap{overflow:visible}}
 @media(max-width:720px){
   .admin-body .admin-columns{grid-template-columns:minmax(0,1fr)}
   .admin-body .admin-columns>div{min-width:0}
+  .admin-body .admin-columns>div:nth-child(2){order:-1}
   .admin-body .os-editor-card{min-width:0;width:100%;max-width:100%}
   .admin-body .os-safety-note{overflow-wrap:anywhere}
 }

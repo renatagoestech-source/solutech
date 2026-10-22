@@ -30,7 +30,7 @@
     </section>
 
     <section class="dashboard" id="dashboard">
-      <div class="dashboard-top"><div><h2>Olá, equipe Solutech! <span style="color:var(--cyan)">✦</span></h2><p id="todayLabel">Aqui está o resumo dos seus atendimentos.</p></div><div class="dashboard-actions"><button class="btn btn-secondary" id="exportBtn">Exportar dados ↓</button><button class="btn btn-secondary" type="button" id="printBlankOsBtn">Imprimir OS em branco</button><button class="btn btn-secondary" id="logoutBtn">Sair ↗</button></div></div>
+      <div class="dashboard-top"><div><h2>Olá, equipe Solutech! <span style="color:var(--cyan)">✦</span></h2><p id="todayLabel">Aqui está o resumo dos seus atendimentos.</p></div><div class="dashboard-actions"><a class="btn btn-secondary" href="#ordersListSection">Lista de OS ↓</a><button class="btn btn-secondary" id="exportBtn">Exportar dados ↓</button><button class="btn btn-secondary" type="button" id="printBlankOsBtn">Imprimir OS em branco</button><button class="btn btn-secondary" id="logoutBtn">Sair ↗</button></div></div>
       <div class="stats-grid">
         <article class="stat-card"><span class="stat-label">TOTAL DE OS</span><strong class="stat-number" id="statTotal">0</strong><span class="stat-foot">Ordens registradas</span></article>
         <article class="stat-card"><span class="stat-label">EM ANDAMENTO</span><strong class="stat-number" id="statProgress">0</strong><span class="stat-foot">Aguardando conclusão</span></article>
@@ -121,8 +121,8 @@
           </section>
         </div>
         <div>
-          <section class="panel-card os-list-card">
-            <div class="panel-heading"><h3>Ordens de serviço</h3><span id="osCountLabel">0 REGISTROS</span></div>
+          <section class="panel-card os-list-card" id="ordersListSection">
+            <div class="panel-heading"><h3>OS cadastradas</h3><span id="osCountLabel">0 REGISTROS</span></div>
             <div class="os-list-tools">
               <label for="searchOs">Buscar por OS, cliente, documento, telefone ou equipamento<input id="searchOs" type="search" placeholder="Digite para filtrar..."></label>
               <label for="osStatusFilter">Filtrar por status<select id="osStatusFilter"><option value="">Todos os status</option><option>Aberta</option><option>Aguardando diagnóstico</option><option>Aguardando aprovação</option><option>Aguardando cliente</option><option>Em andamento</option><option>Aguardando peça</option><option>Concluída</option><option>Entregue</option><option>Cancelada</option></select></label>
